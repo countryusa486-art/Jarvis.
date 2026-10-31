@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="hi"><head><meta charset="utf-8"><title>Jarvis</title><link rel="manifest" href="manifest.json"><meta name="theme-color" content="#020a14"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html,body{margin:0;height:100%;background:#020a14;overflow:hidden;font-family:ui-monospace,Menlo,monospace;color:#7fe3ff}
+canvas{position:fixed;inset:0;width:100%;height:100%}
+#h{position:fixed;top:calc(env(safe-area-inset-top,0px) + 14px);left:0;right:0;text-align:center;letter-spacing:.5em;font-size:18px;text-shadow:0 0 12px #38c8ff}
+#k{position:fixed;top:calc(env(safe-area-inset-top,0px) + 44px);left:0;right:0;text-align:center;font-size:12px;opacity:.7;letter-spacing:.2em}
+#s{position:fixed;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 140px);text-align:center;font-size:15px;min-height:2.6em;white-space:pre-line;max-height:30vh;overflow:auto;text-shadow:0 0 8px #38c8ff88}
+#b{position:fixed;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 22px);display:flex;gap:12px;justify-content:center}
+button{background:#06263a;color:#9eeaff;border:1px solid #38c8ff;border-radius:26px;padding:12px 16px;font-size:15px;font-family:inherit;box-shadow:0 0 14px #38c8ff55}
+#q{position:fixed;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 82px);display:flex;gap:8px}#q input{flex:1;min-width:0;background:#06263a;color:#cdf5ff;border:1px solid #38c8ff;border-radius:22px;padding:10px 16px;font-size:16px;font-family:inherit}#q button{padding:10px 18px}</style></head><body>
+<canvas id="c"></canvas>
+<button id="gs" style="position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;padding:6px 12px;font-size:16px">⚙</button><div id="h">J.A.R.V.I.S</div><div id="k"></div>
+<div id="s">System online. Sir, aapka hukm?</div>
+<div id="q"><input id="i" placeholder="Yahan likho ya keyboard ka mic dabao" enterkeyhint="send"><button id="g">Bhejo</button></div><div id="b"><button id="m">🎤 BOLO</button><button id="t">BOOT</button><button id="y">🧠 YAAD</button></div>
+<script>
+const $=i=>document.getElementById(i),c=$('c'),x=c.getContext('2d'),st=$('s');
+let W,H,mode='idle',amp=0,hue=195;
+function rs(){const d=devicePixelRatio||1;W=innerWidth;H=innerHeight;c.width=W*d;c.height=H*d;x.setTransform(d,0,0,d,0,0)}
+rs();addEventListener('resize',rs);
+const P=Array.from({length:46},()=>({a:Math.random()*6.28,r:.5+Math.random()*1.3,v:(Math.random()-.5)*.5,z:1+Math.random()*1.8}));
+function f(n){const s=n/1000,cx=W/2,cy=H*.42,R=Math.min(W*.8,H*.5)*.36;
+ const th=mode=='speak'?.35+.65*Math.abs(Math.sin(s*9)*Math.sin(s*3.3+1)):mode=='listen'?.2+.15*Math.sin(s*5):.06+.04*Math.sin(s*1.5);
+ amp+=(th-amp)*.25;
+ const th2=mode=='listen'?150:mode=='speak'?205:195;hue+=(th2-hue)*.08;
+ const col=(l,a)=>`hsla(${hue},100%,${l}%,${a})`;
+ x.clearRect(0,0,W,H);
+ const g=x.createRadialGradient(cx,cy,0,cx,cy,R*1.6);g.addColorStop(0,col(60,.55+amp*.35));g.addColorStop(.3,col(50,.18));g.addColorStop(1,col(40,0));
+ x.fillStyle=g;x.fillRect(0,0,W,H);
+ x.save();x.translate(cx,cy);
+ x.lineCap='round';
+ x.strokeStyle=col(60,.5);x.lineWidth=1.5;x.setLineDash([3,9]);x.lineDashOffset=-s*25;x.beginPath();x.arc(0,0,R*1.5,0,6.283);x.stroke();x.setLineDash([]);
+ x.strokeStyle=col(60,.85);x.lineWidth=5;for(let i=0;i<3;i++){const a=s*.7+i*2.094;x.beginPath();x.arc(0,0,R*1.25,a,a+1.0);x.stroke()}
+ x.lineWidth=2;x.strokeStyle=col(65,.7);for(let i=0;i<4;i++){const a=-s*1.1+i*1.57;x.beginPath();x.arc(0,0,R*1.1,a,a+.5);x.stroke()}
+ x.save();x.rotate(s*.25);for(let i=0;i<72;i++){const a=i/72*6.283,l=i%6?5:12;x.strokeStyle=col(65,i%6?.45:.9);x.lineWidth=i%6?1:2;x.beginPath();x.moveTo(Math.cos(a)*R*.95,Math.sin(a)*R*.95);x.lineTo(Math.cos(a)*(R*.95-l),Math.sin(a)*(R*.95-l));x.stroke()}x.restore();
+ for(let i=0;i<96;i++){const a=i/96*6.283,r0=R*.52,l=3+amp*R*.28*Math.abs(Math.sin(i*.5+s*8)*Math.sin(i*.17+s*3));x.strokeStyle=col(70,.5+amp*.5);x.lineWidth=2;x.beginPath();x.moveTo(Math.cos(a)*r0,Math.sin(a)*r0);x.lineTo(Math.cos(a)*(r0+l),Math.sin(a)*(r0+l));x.stroke()}
+ const cg=x.createRadialGradient(0,0,0,0,0,R*.5*(1+amp*.15));cg.addColorStop(0,'#fff');cg.addColorStop(.35,col(75,.95));cg.addColorStop(1,col(50,0));x.fillStyle=cg;x.beginPath();x.arc(0,0,R*.5*(1+amp*.15),0,6.283);x.fill();
+ x.strokeStyle=col(70,.9);x.lineWidth=2;x.beginPath();x.arc(0,0,R*.34,0,6.283);x.stroke();
+ P.forEach(p=>{p.a+=p.v*.01;const r=R*p.r*(1+amp*.05);x.fillStyle=col(75,.6);x.beginPath();x.arc(Math.cos(p.a)*r,Math.sin(p.a)*r,p.z,0,6.283);x.fill()});
+ x.restore();
+ x.fillStyle=col(65,.55);x.font='11px ui-monospace,monospace';x.textAlign='left';
+ const d=new Date(),tt=d.toLocaleTimeString('en-GB');$('k').textContent=tt+'  |  '+mode.toUpperCase();
+ for(let i=0;i<5;i++){const w=30+Math.abs(Math.sin(s*.8+i*1.7))*70;x.fillRect(16,cy+R*1.8+i*10-80+80,w,3)}
+ requestAnimationFrame(f)}
+requestAnimationFrame(f);
+function say(hi,ro){if(!window.speechSynthesis){st.textContent='Is browser mein awaaz nahi hai. Link ko Chrome mein kholo';return}speechSynthesis.cancel();const all=speechSynthesis.getVoices(),hv=all.find(v=>v.lang.startsWith('hi')),ev=all.find(v=>v.lang=='en-IN')||all.find(v=>v.lang.startsWith('en')),v=hv||ev,u=new SpeechSynthesisUtterance(hv?hi:ro);if(v){u.voice=v;u.lang=v.lang}else u.lang='en-IN';u.pitch=.75;u.rate=.95;u.onstart=()=>mode='speak';u.onend=()=>{mode='idle';st.textContent='Standby. Sir, aapka hukm?'};u.onerror=e=>{mode='idle';st.textContent='Awaaz error: '+e.error};speechSynthesis.speak(u);setTimeout(()=>{if(!speechSynthesis.speaking&&mode!='speak')st.textContent='Awaaz shuru nahi hui. Link Chrome mein kholo aur volume check karo'},2500)}
+$('t').onclick=()=>{st.textContent='Initializing…';say('नमस्ते सर। जार्विस ऑनलाइन है। सारे सिस्टम ठीक चल रहे हैं। बताइए, क्या करना है?','Namaste sir. Jarvis online hai. Saare system theek chal rahe hain. Bataiye, kya karna hai?')};
+let MEM=JSON.parse(localStorage.getItem('jmem')||'[]'),mdoc=true;
+async function saveMem(){try{localStorage.setItem('jmem',JSON.stringify(MEM))}catch(e){}}
+async function learn(q){if(!mdoc||!sm||q.length<12)return;try{const a=await sm.json('Existing memory:\n'+MEM.slice(-120).join('\n')+'\n\nThe user just said: '+q+'\n\nList NEW lasting personal facts about the user worth remembering forever (name, family, likes, plans, dates, promises, habits). Reply ONLY with a JSON array of short strings in the same language the user used. Use [] if nothing new.',{cache:false});if(Array.isArray(a)&&a.length){MEM=[...new Set([...MEM,...a.map(String)])].slice(-300);saveMem()}}catch(e){}}
+let HS=[];
+const KEY=()=>localStorage.getItem('gk')||'';
+function openSettings(){const k=prompt('Google Gemini API key yahan paste karo:',KEY());if(k!==null){localStorage.setItem('gk',k.trim());st.textContent='Key save ho gayi. Ab baat karo.'}}
+async function gem(p){const k=KEY();let err='';for(const m of [localStorage.getItem('gm')||'gemini-flash-latest','gemini-3.6-flash','gemini-2.5-flash']){try{const r=await fetch('https://generativelanguage.googleapis.com/v1beta/models/'+m+':generateContent?key='+k,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{role:'user',parts:[{text:p}]}]})});const j=await r.json();if(j.candidates&&j.candidates[0]&&j.candidates[0].content)return j.candidates[0].content.parts.map(x=>x.text||'').join('');err=(j.error&&j.error.message)||'no reply';if(r.status==400||r.status==403)break}catch(e){err=e.message}}throw new Error(err)}
+const sm=Object.assign(async p=>({text:await gem(p)}),{json:async p=>{const t=await gem(p+'\n\nReply with raw JSON only.'),m=t.match(/\[[\s\S]*\]/);return m?JSON.parse(m[0]):[]}});
+async function ask(q){if(/sab bhool|bhool jao|forget everything/i.test(q)){MEM=[];saveMem();st.textContent='Theek hai sir, maine sab bhula diya.';say('ठीक है सर, मैंने सब भुला दिया।','Theek hai sir, maine sab bhula diya.');return}st.textContent='Aapne kaha: '+q+'\nSoch raha hoon…';mode='idle';
+ try{if(!KEY()){openSettings();if(!KEY())return}
+  HS.push('User: '+q);HS=HS.slice(-10);
+  const hasHi=speechSynthesis.getVoices().some(v=>v.lang.startsWith('hi'));
+  const sys='You are JARVIS, the witty, polite and warm personal AI assistant of the user, whom you call Sir. Talk like a real human friend. Reply in '+(hasHi?'Hindi written in Devanagari script':'Hinglish written in Roman script')+', mixing simple English words naturally. Keep it to 1 or 2 short spoken sentences. No markdown, no emojis, no lists.';
+  const r=await sm(sys+'\n\nLong-term memory about the user (facts you remember; use naturally when relevant):\n'+MEM.slice(-120).join('\n')+'\n\nConversation so far (latest last):\n'+HS.join('\n')+'\n\nWrite only JARVIS reply to the last User message.',{cache:false});
+  const a=r.text.trim();HS.push('JARVIS: '+a);st.textContent=a;say(a,a);learn(q);
+ }catch(e){st.textContent='AI error: '+((e&&(e.message||e.code))||e)}}
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+$('g').onclick=()=>{const v=$('i').value.trim();if(v){$('i').value='';ask(v)}};$('i').onkeydown=e=>{if(e.key=='Enter')$('g').click()};
+$('y').onclick=()=>{if(!mdoc){st.textContent='Yaaddasht is page par available nahi hai';return}st.textContent=MEM.length?'Mujhe yaad hai ('+MEM.length+'):\n'+MEM.slice(-6).map(m=>'• '+m).join('\n'):'Abhi mujhe kuch yaad nahi. Mujhse apne baare mein baat karo.'};
+$('m').onclick=()=>{if(!SR){st.textContent='Mic ke liye ye link Chrome mein kholiye';return}
+ const r=new SR();r.lang='hi-IN';r.onresult=e=>{const q=e.results[0][0].transcript;ask(q);0&&say('आपने कहा, '+q+'। अभी मेरा दिमाग जोड़ना बाकी है।','Aapne kaha, '+q+'. Abhi mera dimaag jodna baaki hai.')};
+ r.onend=()=>{if(mode=='listen')mode='idle'};r.onerror=e=>{mode='idle';st.textContent='Mic error: '+e.error};r.start();mode='listen';st.textContent='Listening…'};
+$('gs').onclick=openSettings;if(!KEY())st.textContent='Pehle ⚙ dabao aur Gemini key daalo';
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');
+</script></body></html>
